@@ -1,7 +1,7 @@
 from hashlib import sha256
+from random import SystemRandom
 from .signature import Signature
 from .mymath import Math
-from .utils.integer import RandomInteger
 from .utils.binary import numberFromByteString
 from .utils.compatibility import *
 
@@ -16,7 +16,7 @@ class Ecdsa:
 
         r, s, randSignPoint = 0, 0, None
         while r == 0 or s == 0:
-            randNum = RandomInteger.between(1, curve.N - 1)
+            randNum = SystemRandom().randrange(1, curve.N - 1)
             randSignPoint = Math.multiply(curve.G, n=randNum, A=curve.A, P=curve.P, N=curve.N)
             r = randSignPoint.x % curve.N
             s = ((numberMessage + r * privateKey.secret) * (Math.inv(randNum, curve.N))) % curve.N
@@ -24,7 +24,7 @@ class Ecdsa:
         if randSignPoint.y > curve.N:
             recoveryId += 2
 
-        return Signature(r=r, s=s, recoveryId=recoveryId)
+        return Signature(r=r, s=s, recoveryId=recoveryId), numberMessage
 
     @classmethod
     def verify(cls, message, signature, publicKey, hashfunc=sha256):

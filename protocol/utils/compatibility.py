@@ -1,4 +1,3 @@
-from sys import version_info as pyVersion
 from binascii import hexlify, unhexlify
 
 stringTypes = (str,)

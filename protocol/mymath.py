@@ -42,23 +42,10 @@ class Math:
 
     @classmethod
     def _toJacobian(cls, p):
-        """
-        Convert point to Jacobian coordinates
-
-        :param p: First Point you want to add
-        :return: Point in Jacobian coordinates
-        """
         return Point(p.x, p.y, 1)
 
     @classmethod
     def _fromJacobian(cls, p, P):
-        """
-        Convert point back from Jacobian coordinates
-
-        :param p: First Point you want to add
-        :param P: Prime number in the module of the equation Y^2 = X^3 + A*X + B (mod p)
-        :return: Point in default coordinates
-        """
         z = cls.inv(p.z, P)
         x = (p.x * z ** 2) % P
         y = (p.y * z ** 3) % P
