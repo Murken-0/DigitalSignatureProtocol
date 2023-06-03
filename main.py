@@ -1,16 +1,24 @@
 from tkinter import *
 from tkinter.messagebox import showinfo
 import math
+from protocol.utils.integer import *
+from protocol.curve import *
+from protocol.privateKey import *
+from protocol.publicKey import *
 
 def prime_test1():
     global p
     if is_prime_simple(p):
-        showinfo(title="Ферм", message="Тест 1: P простое")
+        showinfo(title="Перебор", message="Тест 1: P простое")
+    else:
+        showinfo(title="Перебор", message="Тест 1: P составное")
 
 def prime_test2():
     global p
     if is_prime_whilson(p):
-        showinfo(title="Миллер-Рабин", message="Тест 2: P простое")
+        showinfo(title="Теорема Вильсона", message="Тест 2: P простое")
+    else:
+        showinfo(title="Теорема Вильсона", message="Тест 2: P составное")
 
 def is_prime_simple(number: int):
     if number < 2:
@@ -25,6 +33,19 @@ def is_prime_whilson(n):
         return False
     else:
         return True
+    
+def generate_prime():
+    global p
+    p = 2
+    while not is_prime_simple(p):
+        p = RandomInteger.between(1, secp256k1.N - 1)
+    label_p.configure(text=str(p))
+
+def gen_keys():
+    global private, public, p
+    private = PrivateKey(secret=p)
+    lab
+    
 
 form_sender = Tk()
 form_reciever = Tk()
@@ -33,19 +54,16 @@ form_sender.geometry("550x550+400+200")
 form_reciever.geometry("550x550+1000+200")
 form_sender.title("Отправитель")
 form_reciever.title("Получатель")
-p_prost = Button(form_sender,text="Сгенерировать число P", command=generate_p).place(x = 10, y = 230)
-g_perv = Button(form_sender,text="Сгенерировать число G",command=generate_g).place(x = 10, y = 260)
+p_prost = Button(form_sender,text="Сгенерировать число P", command=generate_prime).place(x = 10, y = 230)
 p_prov1 = Button(form_sender,text="Тест1. Проверка числа P на простоту", command=prime_test1).place(x = 300, y = 230)
 p_prov2 = Button(form_sender,text="Тест2. Проверка числа P на простоту", command=prime_test2).place(x = 300, y = 260)
-labelp = Label(form_sender, text="P: ")
-labelp.place(x = 160, y = 230)
-labelg = Label(form_sender, text="G: ")
-labelg.place(x = 160, y = 260)
+label_p = Label(form_sender, text="P: ")
+label_p.place(x = 160, y = 230)
 gen_keys = Button(form_sender, text="Сгенерировать ключи", command=gen_keys).place(x = 10, y = 290)
-labelgen = Label(form_sender, text="Открытый ключ: ")
-labelgen.place(x = 160, y = 290)
-labelsacr = Label(form_sender, text="Закрытый ключ: ")
-labelsacr.place(x = 350, y = 290)
+label_public = Label(form_sender, text="Открытый ключ: ")
+label_public.place(x = 160, y = 290)
+label_private = Label(form_sender, text="Закрытый ключ: ")
+label_private.place(x = 350, y = 290)
 otpr1 = Button(form_sender, text="Отправить открытый ключ", command= otpr1).place(x = 10, y = 320)
 sash = Button(form_sender, text="Вычислить хэш значение", command= hashir).place(x = 10, y = 350)
 labelH = Label(form_sender, text="H: ")
