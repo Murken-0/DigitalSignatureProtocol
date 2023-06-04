@@ -1,34 +1,29 @@
-from hashlib import sha256
-from curve import secp256k1
+from protocol.privateKey import PrivateKey
+from protocol.publicKey import PublicKey
 from random import randint
-from signature import Signature
-from utils.binary import numberFromByteString
-from utils.compatibility import *
-from point import *
-
+from protocol.myMath import Math as m
+from protocol.signature import Signature
 
 class Ecdsa:
 
-    @classmethod
-    def sign(cls, message:str, privateKey):
-        n = secp256k1.N
+    @staticmethod
+    def sign(message:int, private_key:PrivateKey) -> Signature:
+        n = private_key.curve.N
         r = 0
         while r == 0:
             k = randint(1, n - 1)
-            r_point = secp256k1.G.multiply(k)
+            r_point = m.multiply(private_key.curve.G, k)
             r = r_point.x % n
-        
-        hashedMsg = sha256(message.encode()).digest()
-        num = numberFromByteString(hashedMsg)
 
-        k_inverse = inverse(k, n)
-        s = k_inverse * (num + r * privateKey) % n
+        k_inverse = m.inverse(k, n)
+        s = k_inverse * (message + r * private_key.secret) % n
 
         return Signature(r, s)
 
-    @classmethod
-    def verify(cls, message, signature, publicKey):
-        # byteMessage = sha256(toBytes(message)).digest()
-        # numberMessage = numberFromByteString(byteMessage)
-        s_inverse = inverse(signature.s, secp256k1.N)
-        u = message
+    @staticmethod
+    def verify(message:str, signature:Signature, public_key:PublicKey) -> bool:
+        s_inverse = m.inverse(signature.s, public_key.curve.N)
+        u = message * s_inverse % public_key.curve.N
+        v = signature.r * s_inverse % public_key.curve.N
+        c_point = m.add(m.multiply(public_key.curve.G, u), m.multiply(public_key.point, v)) 
+        return c_point.x == signature.r

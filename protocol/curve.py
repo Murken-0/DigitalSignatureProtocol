@@ -1,19 +1,19 @@
-from .point import Point
+from protocol.point import Point
 
-class CurveFp:
+class Curve:
 
-    def __init__(self, A, B, P, N, Gx, Gy, name):
-        self.A = A
-        self.B = B
-        self.P = P
-        self.N = N
+    def __init__(self, A:int, B:int, P:int, N:int, Gx:int, Gy:int):
+        self.A:int = A
+        self.B:int = B
+        self.P:int = P
+        self.N:int = N
         self.G = Point(Gx, Gy)
 
-secp256k1 = CurveFp(
-    A=0x0000000000000000000000000000000000000000000000000000000000000000,
-    B=0x0000000000000000000000000000000000000000000000000000000000000007,
-    P=0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f,
-    N=0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141,
-    Gx=0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
-    Gy=0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8,
+secp256k1 = Curve(
+    A = 0,
+    B = 7,
+    P = 115792089237316195423570985008687907853269984665640564039457584007908834671663,
+    N = 115792089237316195423570985008687907852837564279074904382605163141518161494337,
+    Gx = 55066263022277343669578718895168534326250603453777594175500187360389116729240,
+    Gy = 32670510020758816978083085130507043184471273380659243275938904335757337482424,
 )
