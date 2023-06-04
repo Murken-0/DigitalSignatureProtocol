@@ -1,6 +1,4 @@
-from .mymath import Math
 from .point import Point
-
 
 class CurveFp:
 
@@ -10,29 +8,8 @@ class CurveFp:
         self.P = P
         self.N = N
         self.G = Point(Gx, Gy)
-        self.name = name
-
-    def contains(self, p):
-        if not 0 <= p.x <= self.P - 1:
-            return False
-        if not 0 <= p.y <= self.P - 1:
-            return False
-        if (p.y**2 - (p.x**3 + self.A * p.x + self.B)) % self.P != 0:
-            return False
-        return True
-
-    def length(self):
-        return (1 + len("%x" % self.N)) // 2
-
-    def y(self, x, isEven):
-        ySquared = (pow(x, 3, self.P) + self.A * x + self.B) % self.P
-        y = Math.modularSquareRoot(ySquared, self.P)
-        if isEven != (y % 2 == 0):
-            y = self.P - y
-        return y
 
 secp256k1 = CurveFp(
-    name="secp256k1",
     A=0x0000000000000000000000000000000000000000000000000000000000000000,
     B=0x0000000000000000000000000000000000000000000000000000000000000007,
     P=0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f,

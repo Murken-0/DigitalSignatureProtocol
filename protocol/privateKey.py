@@ -1,25 +1,14 @@
-from .mymath import Math
-from .utils.binary import intFromHex, hexFromInt
-from .curve import secp256k1
-from .publicKey import PublicKey
+from curve import secp256k1
+from publicKey import PublicKey
+from random import randint
+from utils.binary import hexFromInt
 
 
 class PrivateKey:
 
-    def __init__(self, curve=secp256k1, secret=None):
-        self.curve = curve
-        self.secret = secret
+    def __init__(self):
+        self.curve = secp256k1
+        self.secret = hexFromInt(randint(1, self.curve.N - 1))
 
     def publicKey(self):
-        curve = self.curve
-        publicPoint = Math.multiply(
-            p=curve.G,
-            n=self.secret,
-            N=curve.N,
-            A=curve.A,
-            P=curve.P,
-        )
-        return PublicKey(point=publicPoint, curve=curve)
-
-    def toString(self):
-        return hexFromInt(self.secret)
+        return PublicKey(self.curve.G.multiply(self.secret))
