@@ -1,14 +1,31 @@
 from tkinter import *
 from tkinter.messagebox import showinfo
 
+from random import randint
+from protocol.curve import secp256k1
+
 from protocol.privateKey import PrivateKey
 from hashlib import sha256
 from protocol.binary import *
 from protocol.ecdsa import Ecdsa
 
+def is_prime(number):
+    if number < 2:
+        return False
+    for i in range(2, int(number ** 0.5) + 1):
+        if number % i == 0:
+            return False
+    return True
+
+def generate_prime_number():
+    while True:
+        number = randint(1, secp256k1.N - 1)
+        if is_prime(number):
+            return number
+
 def generate_keys():
-    global private, public
-    private = PrivateKey()
+    global private, public, p
+    private = PrivateKey(p)
     label_private.configure(text="Приватный ключ: " + str(private))
     public = private.publicKey()
     label_public.configure(text="Открытый ключ: " + str(public))
